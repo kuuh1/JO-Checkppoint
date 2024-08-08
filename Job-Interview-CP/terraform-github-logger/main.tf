@@ -119,6 +119,18 @@ resource "aws_iam_role_policy" "lambda_logging_policy" {
         ],
         Effect   = "Allow",
         Resource = "*"
+      },
+      {
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:ListBucket"
+        ],
+        Effect   = "Allow",
+        Resource = [
+          aws_s3_bucket.github_logs.arn,
+          "${aws_s3_bucket.github_logs.arn}/*"
+        ]
       }
     ]
   })
