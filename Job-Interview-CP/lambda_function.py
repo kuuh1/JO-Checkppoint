@@ -7,7 +7,12 @@ s3_client = boto3.client('s3')
 def lambda_handler(event, context):
     body = json.loads(event['body'])
     repo_name = body['repository']['full_name']
-    files_changed = [file['filename'] for file in body['commits'][0]['modified']]
+
+    files_changed = []
+    for commit in body['commits']:
+        for file in commit['modified']:
+            files_changed.append(file)
+
 
     log_entry = {
         'repository': repo_name,
