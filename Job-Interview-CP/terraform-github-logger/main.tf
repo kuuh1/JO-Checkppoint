@@ -21,6 +21,36 @@ resource "aws_iam_role" "lambda_execution_role" {
   ]
 }
 
+resource "null_resource" "install_layer_dependencies" {
+  provisioner "local-exec" {
+    command = "pip install -r layer/requirements.txt -t layer/python/lib/python3.9/site-packages"
+  }
+  triggers = {
+    trigger = timestamp()
+  }
+}
+
+data "archive_file" "layer_zip" {
+  type        = "zip"
+  source_dir  = "layer"
+  output_path = "layer.zip"
+  depends_on = [
+    null_resource.install_layer_dependencies
+  ]
+}
+
+resource "aws_lambda_layer_version" "lambda_layer" {
+  filename = "layer.zip"
+  source_code_hash = data.archive_file.layer_zip.output_base64sha256
+  layer_name = "env-layer"
+
+  compatible_runtimes = ["python3.8"]
+  depends_on = [
+    data.archive_file.layer_zip
+  ]
+}
+
+
 resource "aws_lambda_function" "github_logger" {
   function_name = "github_logger"
   role          = aws_iam_role.lambda_execution_role.arn
@@ -29,6 +59,9 @@ resource "aws_lambda_function" "github_logger" {
   filename      = "lambda_function_payload.zip"
   source_code_hash = filebase64sha256("lambda_function_payload.zip")
 
+  layers = [
+    aws_lambda_layer_version.lambda_layer.arn
+  ]
   environment {
     variables = {
       LOG_BUCKET = aws_s3_bucket.github_logs.bucket

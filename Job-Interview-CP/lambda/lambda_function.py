@@ -13,7 +13,7 @@ def lambda_handler(event, context):
 
     response = requests.get(commits_url)
     commits = response.json()
-    
+
     print(f'commits within the pr : {json.dumps(commits)}')
 
     changed_files = set()
