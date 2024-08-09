@@ -14,11 +14,14 @@ def lambda_handler(event, context):
         for file in commit['modified']:
             files_changed.append(file)
 
+    unique_files_changed = set(files_changed)
 
     log_entry = {
         'repository': repo_name,
-        'files_changed': files_changed
+        'files_changed': unique_files_changed
     }
+
+    print(json.dumps(log_entry))
 
     s3_client.put_object(
         Bucket=os.environ['LOG_BUCKET'],
