@@ -41,7 +41,7 @@ resource "aws_lambda_function" "github_logger" {
 }
 
 resource "aws_s3_bucket" "github_logs" {
-  bucket = "github-logs"
+  bucket = "github-logs-v2"
 }
 
 resource "aws_apigatewayv2_api" "github_webhook_api" {
