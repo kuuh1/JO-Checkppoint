@@ -1,27 +1,30 @@
 import json
 import boto3
 import os
+import requests
 
 s3_client = boto3.client('s3')
 
+
 def lambda_handler(event, context):
-    body = json.loads(event['body'])
-    repo_name = body['repository']['full_name']
+    body = event['body']
+    commits_url = body['pull_request']['commits_url']
+    repo_name = body['repository']['name']
 
-    if "commits" not in body:
-        print("There are no commits under the request")
+    response = requests.get(commits_url)
+    commits = response.json()
+    
+    print(f'commits within the pr : {json.dumps(commits)}')
 
+    changed_files = set()
 
-    files_changed = []
-    for commit in body['commits']:
-        for file in commit['modified']:
-            files_changed.append(file)
-
-    unique_files_changed = set(files_changed)
+    for commit in commits:
+        for file in commit['files']:
+            changed_files.add(file['filename'])
 
     log_entry = {
         'repository': repo_name,
-        'files_changed': unique_files_changed
+        'files_changed': changed_files
     }
 
     print(json.dumps(log_entry))
