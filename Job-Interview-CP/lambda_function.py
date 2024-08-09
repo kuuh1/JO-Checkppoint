@@ -8,7 +8,10 @@ def lambda_handler(event, context):
     body = json.loads(event['body'])
     repo_name = body['repository']['full_name']
 
-    # files_changed = [file['filename'] for file in body['commits'][0]['modified']]
+    if "commits" not in body:
+        print("There are no commits under the request")
+
+
     files_changed = []
     for commit in body['commits']:
         for file in commit['modified']:
