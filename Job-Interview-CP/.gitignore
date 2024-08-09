@@ -3,3 +3,6 @@
 **.tfstate
 **.backup
 **/.idea
+**/python
+**layer.zip
+**/venv
