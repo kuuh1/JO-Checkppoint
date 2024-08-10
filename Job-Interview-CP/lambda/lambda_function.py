@@ -15,16 +15,12 @@ def lambda_handler(event, context):
     response = requests.get(commits_url)
     commits = response.json()
 
-    print(f'commits within the pr : {json.dumps(commits)}')
-
     changed_files = set()
 
     for commit in commits:
         commit_url = commit['url']
-        print(f'current commit url : {commit_url}')
         commit_response = requests.get(commit_url)
         commit_json = commit_response.json()
-        print(f'commit json: {commit_json}')
 
         for file in commit_json['files']:
             changed_files.add(file['filename'])

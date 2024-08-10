@@ -77,6 +77,10 @@ resource "aws_s3_bucket" "github_logs" {
   bucket = "github-logs-v2"
 }
 
+# # resource "aws_s3_bucket" "exist_bucket" {
+#   bucket = "new-logginpullrequest123"
+# }
+
 resource "aws_apigatewayv2_api" "github_webhook_api" {
   name          = "github_webhook_api"
   protocol_type = "HTTP"
