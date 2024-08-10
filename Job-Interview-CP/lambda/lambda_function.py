@@ -31,7 +31,7 @@ def lambda_handler(event, context):
 
     log_entry = {
         'repository': repo_name,
-        'files_changed': changed_files
+        'files_changed': list(changed_files)
     }
 
     print(json.dumps(log_entry))
