@@ -1,8 +1,8 @@
-GitHub Webhook Logger
+# GitHub Webhook Logger
 
 This project sets up an AWS infrastructure to log details of GitHub webhook events using an API Gateway, Lambda function, S3 bucket, and CloudWatch for monitoring. The Lambda function is triggered by GitHub webhooks, processes the event data, and stores the logs in an S3 bucket.
 
-Project Overview:
+## Project Overview:
 
 * API Gateway: Handles HTTP requests from GitHub webhooks.
 * Lambda Function: Processes the incoming webhook data, identifies the changed files in a pull request, and logs this data.
@@ -12,12 +12,34 @@ Project Overview:
 
   ![Architecture](https://github.com/user-attachments/assets/bf12735f-1a27-478c-b471-a1f49b47ba95)
 
-Usage
+## Usage
 
 1. Clone the repository and navigate to the project directory.
 2. Install the required dependencies for the Lambda layer using pip and package them.
 3. Deploy the infrastructure using Terraform: terraform init, terraform apply.
-4. Configure your GitHub repository to send webhook events to the API Gateway endpoint.
+4. Set up your GitHub repository to send webhook events to the API Gateway endpoint. After deploying all resources with Terraform, the endpoint URL for the webhook (webhook_url) will be provided as output.
 5. Monitor the API Gateway and Lambda function logs in CloudWatch.
 6. Logs of the processed GitHub webhook events will be stored in the specified S3 bucket.
-:)
+
+## Security Considerations
+Security is a top priority in this project, and several measures have been implemented to ensure that the infrastructure is robust and secure:
+
+1. API Gateway Throttling: To protect against Distributed Denial of Service (DDoS) attacks and other forms of abuse, throttling is enforced on the API Gateway. Throttling limits the number of requests that can be processed within a specific time interval, thereby preventing excessive load on the system and ensuring the availability of resources.
+2. Principle of Least Privilege: All AWS resources, including Lambda functions, S3 buckets, and CloudWatch, are assigned IAM roles that adhere to the principle of least privilege. This means that each resource is granted only the permissions necessary to perform its intended function and nothing more. By minimizing the permissions allocated to each role, the risk of unauthorized access or actions is significantly reduced.
+
+## Load Considerations
+This solution leverages a serverless architecture to efficiently manage varying levels of load and ensure high availability:
+
+1. Scalability with AWS Lambda: The Lambda function serves as the core compute resource, automatically scaling to handle any number of incoming requests. AWS Lambda provisions more instances in response to increased traffic, ensuring that the system can accommodate spikes in load without manual intervention.
+2. API Gateway as a Trigger: The API Gateway is used to expose the Lambda function as an HTTP endpoint. It manages all incoming requests and triggers the Lambda function accordingly. This setup allows for seamless scaling and reduces the overhead associated with managing traditional server-based infrastructures.
+
+## Cost Considerations
+The solution is designed with cost efficiency in mind, utilizing AWS's pay-per-use services:
+
+1. API Gateway: Billed per API call and data processed, making it cost-effective for variable traffic. Throttling helps control costs by limiting excessive requests.
+
+2. AWS Lambda: Costs are based on the number of requests and execution time. The serverless model ensures you only pay for what you use, avoiding idle costs.
+
+3. Amazon S3: Charges are based on storage size and access requests. Efficient log management and lifecycle policies help minimize storage costs.
+
+4. Amazon CloudWatch: Costs depend on the volume of logs and metrics ingested. Setting retention policies and collecting only essential data helps keep monitoring expenses low.
