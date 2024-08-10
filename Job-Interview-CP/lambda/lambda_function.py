@@ -7,7 +7,8 @@ s3_client = boto3.client('s3')
 
 
 def lambda_handler(event, context):
-    body = event['body']
+    # body = event['body']
+    body = json.loads(event['body']) if isinstance(event['body'], str) else event['body']
     commits_url = body['pull_request']['commits_url']
     repo_name = body['repository']['name']
 
