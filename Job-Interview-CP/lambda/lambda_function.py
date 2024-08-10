@@ -12,7 +12,6 @@ def lambda_handler(event, context):
     commits_url = body['pull_request']['commits_url']
     repo_name = body['repository']['name']
 
-
     response = requests.get(commits_url)
     commits = response.json()
 
@@ -21,15 +20,14 @@ def lambda_handler(event, context):
     changed_files = set()
 
     for commit in commits:
-        print(f'current commit url : {commit['url']}')
         commit_url = commit['url']
+        print(f'current commit url : {commit_url}')
         commit_response = requests.get(commit_url)
         commit_json = commit_response.json()
         print(f'commit json: {commit_json}')
 
         for file in commit_json['files']:
             changed_files.add(file['filename'])
-
 
     log_entry = {
         'repository': repo_name,
