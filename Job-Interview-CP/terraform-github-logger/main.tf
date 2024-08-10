@@ -44,7 +44,7 @@ resource "aws_lambda_layer_version" "lambda_layer" {
   source_code_hash = data.archive_file.layer_zip.output_base64sha256
   layer_name = "env-layer"
 
-  compatible_runtimes = ["python3.8"]
+  compatible_runtimes = ["python3.9"]
   depends_on = [
     data.archive_file.layer_zip
   ]
@@ -55,7 +55,7 @@ resource "aws_lambda_function" "github_logger" {
   function_name = "github_logger"
   role          = aws_iam_role.lambda_execution_role.arn
   handler       = "lambda_function.lambda_handler"
-  runtime       = "python3.8"
+  runtime       = "python3.9"
   filename      = "lambda_function_payload.zip"
   source_code_hash = filebase64sha256("lambda_function_payload.zip")
 
