@@ -20,4 +20,4 @@ Usage
 4. Configure your GitHub repository to send webhook events to the API Gateway endpoint.
 5. Monitor the API Gateway and Lambda function logs in CloudWatch.
 6. Logs of the processed GitHub webhook events will be stored in the specified S3 bucket.
-
+:)
